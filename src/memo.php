@@ -1,5 +1,19 @@
 <?php
 
+// DB接続関数
+function dbConnect()
+{
+    $link = mysqli_connect('db', 'book_log', 'pass', 'book_log');
+
+    if (!$link) {
+        echo 'DBに接続できませんでした' . PHP_EOL;
+        echo 'DebuggingError:' . mysqli_connect_error() . PHP_EOL;
+        exit;
+    }
+
+    return $link;
+}
+
 // バリデーションチェック関数
 function validate($memo)
 {
@@ -7,35 +21,36 @@ function validate($memo)
     // タイトル入力に関するバリデーションチェック
     if (!strlen($memo['title'])) {
         $errors['title'] = 'タイトルが未入力です';
-    } elseif ($memo['title'] < 255) {
+    } elseif ($memo['title'] > 255) {
         $errors['title'] = 'タイトルは255文字以内で入力してください';
     }
 
     // カテゴリ入力に関するバリデーションチェック
     if (!strlen($memo['category'])) {
         $errors['category'] = 'カテゴリが未入力です';
-    } elseif (in_array($memo['category'], ['仕事', '日常', 'アイディア'])) {
+    } elseif (!in_array($memo['category'], ['仕事', '日常', 'アイディア'])) {
         $errors['category'] = 'カテゴリは「仕事」「日常」「アイディア」の３つから入力してください';
     }
 
     // 重要度に関するバリデーションチェック
     if (!strlen($memo['importance'])) {
         $errors['importance'] = '重要度が未入力です';
-    } elseif ($memo['importance'] < 0 || $memo['importance'] > 5) {
+    } elseif ($memo['importance'] < 1 || $memo['importance'] > 5) {
         $errors['importance'] = '重要度は1~5の整数で入力してください';
     }
 
     // メモ内容の入力に関するバリデーションチェック
     if (!strlen($memo['summary'])) {
         $errors['summary'] = 'メモ内容が未入力です';
-    } elseif ($memo['summary'] < 1000) {
-        $errors['summary'] = 'タイトルは1000文字以内で入力してください';
+    } elseif ($memo['summary'] > 1000) {
+        $errors['summary'] = 'メモ内容は1000文字以内で入力してください';
     }
 
     return $errors;
 }
 
-function createMemo()
+// メモの作成関数
+function createMemo($link)
 {
     $memo = [];
     // メモの登録処理
@@ -62,15 +77,49 @@ function createMemo()
         return;
     }
 
-    // $memos[] = [
-    //     'title' => $title,
-    //     'category' => $category,
-    //     'importance' => $importance,
-    //     'summary' => $summary
-    // ];
+    $sql = <<<EOT
+    INSERT INTO memos(
+        title,
+        category,
+        importance,
+        summary
+        ) VALUES (
+        "{$memo['title']}",
+        "{$memo['category']}",
+        "{$memo['importance']}",
+        "{$memo['summary']}"
+        )
+    EOT;
+    $results = mysqli_query($link, $sql);
 
-    echo 'メモの入力が完了しました！' . PHP_EOL;
+    if ($results) {
+        echo '新しいメモが登録されました！' . PHP_EOL;
+    } else {
+        echo 'Error:データが追加できませんでした' . PHP_EOL;
+        echo 'DebuggingError:' . mysqli_error($link) . PHP_EOL;
+    }
 }
+
+// メモの表示関数
+function showMemos($link)
+{
+    echo '登録されたメモを表示します' . PHP_EOL;
+
+    // DBから登録された内容の取得
+    $sql = ('SELECT * FROM memos');
+    // SQLの実行と変数への格納
+    $results = mysqli_query($link, $sql);
+
+    foreach ($results as $memo) {
+        echo 'タイトル：' . $memo['title'] . PHP_EOL;
+        echo 'カテゴリ：' . $memo['category'] . PHP_EOL;
+        echo '重要度：' . $memo['importance'] . PHP_EOL;
+        echo '内容：' . $memo['summary'] . PHP_EOL;
+        echo '------------------------------' . PHP_EOL;
+    }
+}
+
+$link = dbConnect();
 
 while (true) {
 
@@ -84,19 +133,10 @@ while (true) {
     $num = (int)fgets(STDIN);
 
     if ($num === 1) {
-        createMemo();
+        createMemo($link);
     } elseif ($num === 2) {
         // メモの表示処理
-        // showMemos();
-        echo '登録されたメモを表示します' . PHP_EOL;
-
-        foreach ($memos as $memo) {
-            echo 'タイトル：' . $memo['title'] . PHP_EOL;
-            echo 'カテゴリ：' . $memo['category'] . PHP_EOL;
-            echo '重要度：' . $memo['importance'] . PHP_EOL;
-            echo '内容：' . $memo['summary'] . PHP_EOL;
-            echo '------------------------------' . PHP_EOL;
-        }
+        showMemos($link);
     } elseif ($num === 3) {
         // メモの削除処理
         echo 'メモを削除します' . PHP_EOL;
