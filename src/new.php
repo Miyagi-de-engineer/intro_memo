@@ -1,7 +1,8 @@
 <?php
 
+session_start();
 $errors = [];
 
-//var_dump($errors);
-
-@include __DIR__ . '/views/new.php';
+$title = 'メモの登録';
+$content = __DIR__ . '/views/new.php';
+@include __DIR__ . '/views/layout.php';

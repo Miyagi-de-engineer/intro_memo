@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 require_once __DIR__ . '/vendor/auto_load.php';
 
 // DB接続関数

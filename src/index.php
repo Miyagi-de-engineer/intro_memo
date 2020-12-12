@@ -1,18 +1,31 @@
 <?php
 
-?>
+require_once __DIR__ . '/lib/mysqli.php';
+require_once __DIR__ . '/lib/escape.php';
 
-<!DOCTYPE html>
-<html lang="en">
+function listMemos($link)
+{
+    $memos = [];
+    // SQL文
+    $sql = 'SELECT * FROM memos';
+    // 結果を変数に格納
+    $results = mysqli_query($link, $sql);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登録メモ一覧</title>
-</head>
+    while ($memo = mysqli_fetch_assoc($results)) {
+        $memos[] = $memo;
+    }
 
-<body>
-    <h1>登録メモ一覧</h1>
-</body>
+    // 降順で表示できるように配列をソートし直す
+    arsort($memos);
 
-</html>
+    mysqli_free_result($results);
+
+    return $memos;
+}
+
+$link = dbConnect();
+$memos = listMemos($link);
+
+$title = 'メモ一覧';
+$content = __DIR__ . '/views/index.php';
+include __DIR__ . '/views/layout.php';

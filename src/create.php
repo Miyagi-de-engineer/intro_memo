@@ -93,4 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-@include __DIR__ . '/views/new.php';
+$title = 'メモの登録';
+$content = __DIR__ . '/views/new.php';
+@include __DIR__ . '/views/layout.php';
