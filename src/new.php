@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+require_once __DIR__ . '/lib/mysqli.php';
+require_once __DIR__ . '/lib/escape.php';
 $errors = [];
 
 $title = 'メモの登録';

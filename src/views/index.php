@@ -7,7 +7,7 @@
             <h2 class="card-header h5 mb-4"><?php echo escape($memo['title']); ?></h2>
             <div class="card-body">
                 <div class="card-text mb-3">カテゴリ：<?php echo escape($memo['category']); ?>&nbsp;/&nbsp;重要度：<?php echo escape($memo['importance']); ?></div>
-                <p><?php echo escape(nl2br($memo['summary'])); ?></p>
+                <p><?php echo nl2br(escape($memo['summary'])); ?></p>
                 <a href="delete_memo.php?id=<?php echo escape($memo['id']); ?>" class="btn btn-danger">削除する<i class="far fa-trash-alt ml-2"></i></a>
             </div>
             <div class="card-footer text-muted text-right"><?php echo escape(date('Y年m月d日', strtotime($memo['created_at'])));  ?></div>

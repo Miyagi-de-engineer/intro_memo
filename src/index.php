@@ -3,6 +3,8 @@
 require_once __DIR__ . '/lib/mysqli.php';
 require_once __DIR__ . '/lib/escape.php';
 
+$search_value = '';
+
 function listMemos($link)
 {
     $memos = [];

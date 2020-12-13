@@ -2,6 +2,7 @@
 
 // DB接続
 require_once __DIR__ . '/lib/mysqli.php';
+require_once __DIR__ . '/lib/escape.php';
 
 // DB登録
 function createMemo($link, $memo)

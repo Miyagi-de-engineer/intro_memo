@@ -15,10 +15,10 @@
         <h1 class="h2">
             <a href="index.php" class="text-body text-decoration-none">メモメモ<i class="fas fa-book ml-2"></i></a>
         </h1>
-        <form action="search.php" class="form-inline">
-            <input type="search" class="form-control mr-sm-2" placeholder="メモの検索">
+        <!-- <form action="search.php" class="form-inline" method="post">
+            <input type="search" name="search" class="form-control mr-sm-2" value="<?php echo escape($search_value); ?>" placeholder="メモの検索">
             <button class="btn btn-outline-info" type="submit">Search</button>
-        </form>
+        </form> -->
     </header>
 
     <div class="container">
